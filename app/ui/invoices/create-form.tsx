@@ -9,26 +9,11 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { useState } from 'react';
-import { State } from '@/app/lib/actions';
+import { createInvoice } from '@/app/lib/actions';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
-  const initialState: State = { message: null, errors: {} };
-  const [state, setState] = useState<State>(initialState);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // Aquí puedes manejar el submit del formulario y actualizar el estado con setState
-    // Por ejemplo:
-    // const formData = new FormData(event.currentTarget);
-    // const data = Object.fromEntries(formData.entries());
-    // // Llamada a la API o lógica de negocio para crear la factura
-    // // ...
-    // setState({ message: 'Factura creada con éxito' });
-  };
-
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form action={createInvoice}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         <div className="mb-4">
           <label htmlFor="customer" className="mb-2 block text-sm font-medium">
@@ -74,12 +59,6 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             </div>
           </div>
           <div id="amount-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.amount &&
-              state.errors.amount.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
           </div>
         </div>
 
@@ -123,12 +102,6 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               </div>
             </div>
             <div id="status-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.status &&
-                state.errors.status.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))}
             </div>
           </div>
         </fieldset>
@@ -142,9 +115,6 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         </Link>
         <Button type="submit">Create Invoice</Button>
       </div>
-      {state.message && (
-        <p className="mt-4 text-sm text-red-500" aria-live="polite">{state.message}</p>
-      )}
     </form>
   );
 }
