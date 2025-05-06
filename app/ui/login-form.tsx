@@ -8,37 +8,14 @@ import {
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useState } from 'react';
+import { useFormState } from 'react-dom';
 import { authenticate } from '@/app/lib/actions';
 
 export default function LoginForm() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isPending, setIsPending] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setErrorMessage(null);
-    setIsPending(true);
-    const formData = new FormData(e.currentTarget);
-    // Fuerza la ruta relativa para evitar problemas de fetch/callbackUrl
-    formData.set('redirectTo', '/dashboard');
-    try {
-      // @ts-ignore
-      const error = await authenticate(undefined, formData);
-      if (error) {
-        setErrorMessage(error);
-      } else {
-        window.location.href = '/dashboard';
-      }
-    } catch (err) {
-      setErrorMessage('Something went wrong.');
-    } finally {
-      setIsPending(false);
-    }
-  }
+  const [errorMessage, formAction] = useFormState(authenticate, undefined);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3" noValidate>
+    <form action={formAction} className="space-y-3" method="POST" noValidate>
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Please log in to continue.
@@ -84,10 +61,9 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        {/* El input hidden de redirectTo ahora es fijo y relativo */}
         <input type="hidden" name="redirectTo" value="/dashboard" />
-        <Button className="mt-4 w-full" aria-disabled={isPending} disabled={isPending}>
-          {isPending ? 'Logging in...' : (<><span>Log in</span> <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" /></>)}
+        <Button className="mt-4 w-full" type="submit">
+          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
         <div
           className="flex h-8 items-end space-x-1"
