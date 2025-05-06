@@ -9,16 +9,26 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createInvoice, State } from '@/app/lib/actions';
-import { useActionState } from 'react';
-
+import { useState } from 'react';
+import { State } from '@/app/lib/actions';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
   const initialState: State = { message: null, errors: {} };
-  const [state, formAction] = useActionState(createInvoice, initialState);
+  const [state, setState] = useState<State>(initialState);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // Aquí puedes manejar el submit del formulario y actualizar el estado con setState
+    // Por ejemplo:
+    // const formData = new FormData(event.currentTarget);
+    // const data = Object.fromEntries(formData.entries());
+    // // Llamada a la API o lógica de negocio para crear la factura
+    // // ...
+    // setState({ message: 'Factura creada con éxito' });
+  };
 
   return (
-    <form action={formAction} noValidate>
+    <form onSubmit={handleSubmit} noValidate>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         <div className="mb-4">
           <label htmlFor="customer" className="mb-2 block text-sm font-medium">
